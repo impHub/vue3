@@ -1,48 +1,66 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
+  <div id="nav">
+    <p>姓名:{{ name }}</p>
     <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
+      <button type="button" @click="changeAge(1)">+</button>
+      <span>年龄:{{ age }}</span>
+      <button type="button" @click="changeAge(-1)">-</button>
     </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-unit-jest" target="_blank" rel="noopener">unit-jest</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript" target="_blank" rel="noopener">typescript</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <p>
+      <button type="button" @click="changeYear(1)">+</button>
+      <span>年份:{{ year }}</span>
+      <button type="button" @click="changeYear(-1)">-</button>
+    </p>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'HelloWorld',
+<script>
+import { computed, reactive, toRefs, watch } from "vue";
+export default {
+  // data() {
+  //   return {
+  //     name: "hh",
+  //   };
+  // },
   props: {
-    msg: String,
+    title: String
   },
-});
-</script>
+  // 写在下面name被执行
+  // props父传来的参数,context相当于this
+  setup(props, context) {
+    const data = reactive({
+      name: "xixi",
+      age: 32,
+      year: computed({
+        get() {
+          console.log("get");
+          return 2020 - data.age;
+        },
+        set(val) {
+          console.log("set");
+          data.age = 2020 - val;
+        }
+      })
+    });
+    watch(
+      () => {
+        return props.title;
+      },
+      (newTitle, oldTitle) => {
+        console.log(newTitle, oldTitle);
+        context.emit("title-changed");
+      }
+    );
+    function changeAge(val) {
+      data.age += val;
+    }
+    function changeYear(val) {
+      data.year = data.year + val;
+    }
 
+    return { ...toRefs(data), changeAge, changeYear };
+  }
+};
+</script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
