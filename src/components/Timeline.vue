@@ -11,12 +11,18 @@
         {{ item }}
       </a>
     </p>
+    <a v-for="item in posts" :key="item.id" class="panel-block">
+      <a>{{ item.title }}</a>
+      <div>{{ item.created.format("yyyy-MM-dd") }}</div>
+    </a>
   </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { Period } from "@/types";
+import { todayPost, todayWeek, todayMonth } from "@/mock";
+import moment from "moment";
 export default defineComponent({
   name: "Timeline",
   setup() {
@@ -28,7 +34,33 @@ export default defineComponent({
       console.log(period);
       selectedPeriod.value = period;
     };
-    return { proiods, selectedPeriod, setPeriod };
+    console.log(todayPost, todayWeek, todayMonth);
+
+    // 展示数据
+    const posts = computed(() =>
+      [todayPost, todayWeek, todayMonth].filter(post => {
+        if (
+          selectedPeriod.value == "今天" &&
+          post.created.isAfter(moment().subtract(1, "day"))
+        ) {
+          return true;
+        }
+        if (
+          selectedPeriod.value == "本周" &&
+          post.created.isAfter(moment().subtract(7, "day"))
+        ) {
+          return true;
+        }
+        if (
+          selectedPeriod.value == "本月" &&
+          post.created.isAfter(moment().subtract(1, "month"))
+        ) {
+          return true;
+        }
+        return false;
+      })
+    );
+    return { proiods, selectedPeriod, setPeriod, posts };
   }
 });
 </script>
