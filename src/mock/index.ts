@@ -25,6 +25,6 @@ export const todayWeek: Post = {
 export const todayMonth: Post = {
     ...basePost,
     title: '本月',
-    // 30天之内都算本月
-    created: moment().subtract(30, "weeks")
+    // 两周内
+    created: moment().subtract(2, "weeks")
 }

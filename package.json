@@ -65,7 +65,8 @@
       "wx": true
     },
     "rules": {
-      "semi": 0
+      "semi": 0,
+      "no-multiple-empty-lines": 0
     }
   }
 }
